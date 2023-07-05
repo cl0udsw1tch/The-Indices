@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Rein" />
+  <meta name="dcterms.date" content="2023-07-02" />
+  <title>Control Systems</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Control Systems</h1>
+<p class="author">Rein</p>
+<p class="date">2023-07-02</p>
+</header>
+<h1 id="laplace-transform">Laplace Transform</h1>
+<h2
+id="definition-mathcallft-fs-int_0-infty-e-stft-dt-where-s-sigma-j-omega-in-mathbbc.">Definition:
+<span class="math inline">\(\mathcal{L}(f(t)) = F(s) =
+\int_{0-}^{\infty} e^{-st}f(t) dt\)</span> where <span
+class="math inline">\(s = \sigma + j \omega \in \mathbb{C}\)</span>.
+</h2>
+<h2
+id="inverse-mathcall-1fs-ftut-frac12-pi-jint_sigma---j-inftysigma-j-infty-est-fs-ds-where-s-sigma-j-omega-in-mathbbc-and-ut-begincases-1-t-0-0-t-0-endcases">Inverse:
+<span class="math inline">\(\mathcal{L}^{-1}(F(s)) = f(t)u(t)
+=  \frac{1}{2 \pi j}\int_{\sigma - j \infty}^{\sigma + j \infty} e^{st}
+F(s) ds\)</span> where <span class="math inline">\(s = \sigma + j \omega
+\in \mathbb{C}\)</span> and <span class="math inline">\(u(t) =
+\begin{cases}
+        1 &amp; t &gt; 0 \\ 0 &amp; t &lt; 0
+\end{cases}\)</span></h2>
+<h2 id="common-transforms">Common Transforms</h2>
+<h3 id="ft-deltat-implies-fs-1"><span class="math inline">\(f(t) =
+\delta(t) \implies F(s) = 1\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> Dirac-<span class="math inline">\(\delta\)</span>
+function: <span class="math inline">\(\delta(t) =  0\)</span> if <span
+class="math inline">\(t &gt; 0\)</span> and defined as <span
+class="math inline">\(\int_{\mathbb{R}} h(t) \delta(t) dt =
+h(0)\)</span>. Equivalently, defined as the non-functional limit <span
+class="math display">\[\lim_{T \to \infty} T_p(t)\]</span> where <span
+class="math display">\[T_p = \begin{cases}
+        0 &amp; \left\lvert t \right\rvert \geq \frac{1}{T} \\
+\frac{1}{2}T &amp; \left\lvert t \right\rvert &lt; \frac{1}{T}
+    \end{cases}\]</span> This is not a function since <span
+class="math inline">\(\lim_{T \to \infty} T_p(0) \to \infty\)</span>.
+Also, <span class="math display">\[\int_{\mathbb{R}} h(t) \lim_{T \to
+\infty} T_p(t) dt = \lim_{T \to \infty} \int_{\mathbb{R}}
+h(t)  T_p(t)  dt\]</span><span class="math display">\[=  \lim_{T \to
+\infty} \lim_{n \to \infty} \sum_{k = 1}^{n} h(\frac{-1}{T} + k
+\frac{2}{Tn})\frac{1}{2}T \frac{2}{Tn} =  \lim_{T \to \infty} \lim_{n
+\to \infty}\sum_{k = 1}^{n} h(\frac{-1}{T} + k \frac{2}{Tn})
+\frac{1}{n}\]</span><span class="math display">\[=  \lim_{n \to \infty}
+\sum_{k = 1}^n h(0) \frac{1}{n} = \lim_{n \to \infty}h(0) =
+h(0)\]</span> by definition of the Riemann integral. Realize also that
+<span class="math display">\[\lim_{T \to \infty} \int_{0}^{\infty}
+h(t)  T_p(t)  dt = \lim_{T \to \infty} \lim_{n \to \infty} \sum_{k =
+1}^{n} h( k \frac{2}{Tn})\frac{1}{2}T \frac{2}{Tn} = h(0)\]</span> and
+the same holds true for the integral on the left half-plane.</p>
+<p>Thus the Laplace transform is <span
+class="math display">\[\mathcal{L}(\delta(t))(s) = F(s) =
+\int_{0-}^{\infty} e^{-st}\delta(t)  dt = e^{-s0} = 1\]</span> ◻</p>
+</div>
+<h3 id="ft-ut-implies-fs-frac1s"><span class="math inline">\(f(t) = u(t)
+\implies F(s) = \frac{1}{s}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> Unit step function: <span class="math inline">\(u(t)
+= \begin{cases}
+    0 &amp; t &lt; 0 \\ 1 &amp; t &gt; 0
+\end{cases}\)</span></p>
+<p><span class="math display">\[\mathcal{L}(u(t))(s) = F(s) =
+\int_{0-}^{\infty} e^{-st}u(t)  dt  = \int_{0-}^{\infty} e^{-st} dt =
+0-\frac{-1}{s}e^0 = \frac{1}{s}\]</span> ◻</p>
+</div>
+<h3 id="ft-tut-implies-fs-frac1s2"><span class="math inline">\(f(t) =
+tu(t) \implies F(s) = \frac{1}{s^2}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span class="math display">\[\mathcal{L}(tu(t))(s) =
+F(s) = \int_{0-}^{\infty} e^{-st}tu(t)  dt  = \int_{0-}^{\infty}
+te^{-st} dt = t\frac{-1}{s}e^{-st} - \int \frac{-1}{s} e^{-st}\]</span>
+<span class="math display">\[= \lim_{t \to \infty} \frac{-1}{s}
+\frac{t}{e^{st}} + \frac{1}{s^2} = \frac{1}{s^2}\]</span> ◻</p>
+</div>
+<h3 id="ft-tn-ut-implies-fs-fracn-1sn-2"><span
+class="math inline">\(f(t) = t^n u(t) \implies F(s)  = \frac{(n +
+1)!}{s^{n + 2}}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> Assume by induction <span
+class="math inline">\(\mathcal{L}(t^nu(t))(s) = \frac{n!}{s^{n +
+1}}\)</span> which holds for <span class="math inline">\(n =  0,
+1\)</span>. Then <span class="math display">\[\mathcal{L}(t^{n +
+1}u(t))(s) = F(s) =  \int_{0-}^{\infty} t^{n + 1}e^{-st} dt  = t^{n + 1}
+\frac{-1}{s}e^{- st} - \int (n + 1) t^n \frac{-1}{s} e^{-st}\]</span>
+<span class="math display">\[= \frac{1}{s} (n + 1) \frac{n!}{s^{n + 1}}
+= \frac{(n + 1)!}{s^{n + 2}}\]</span> ◻</p>
+</div>
+<h3 id="ft-e-atut-implies-fs-frac1s-a"><span class="math inline">\(f(t)
+= e^{-at}u(t) \implies F(s)  = \frac{1}{s + a}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span
+class="math display">\[\mathcal{L}(e^{-at}u(t))(s) = F(s) =
+\int_{0-}^{\infty} e^{-st}e^{-at}u(t)  dt =  \int_{0-}^{\infty} e^{-(s +
+a)t} dt = \frac{1}{s + a}\]</span> ◻</p>
+</div>
+<h3 id="ft-sin-omega-t-ut-implies-fs-fracomegas2-omega2"><span
+class="math inline">\(f(t) =  \sin \omega t u(t) \implies F(s)  =
+\frac{\omega}{s^2 + \omega^2}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span class="math display">\[\mathcal{L}(\sin \omega
+t u(t))(s) = F(s) = \int_{0-}^{\infty} e^{-st}\sin \omega
+tu(t)  dt\]</span> <span class="math display">\[\int_0^{\infty} e^{-st}
+\frac{e^{i\omega t} - e^{-i\omega t}}{2i} dt = \frac{1}{2i}
+\int_0^{\infty}  e^{(-s + i \omega)t} - e^{(-s - i\omega)t} dt
+=\]</span> <span class="math display">\[= \frac{1}{2i} (\frac{1}{s - i
+\omega} - \frac{1}{s + i \omega}) = \frac{1}{2i} \frac{2i \omega}{s^2 +
+\omega^2}= \frac{\omega}{s^2 + \omega^2}\]</span> ◻</p>
+</div>
+<h3 id="ft-cos-omega-t-ut-implies-fs-fracss2-omega2"><span
+class="math inline">\(f(t) = \cos \omega t u(t) \implies F(s)  =
+\frac{s}{s^2 + \omega^2}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span class="math display">\[\mathcal{L}(\cos \omega
+t u(t))(s) = F(s) = \int_{0-}^{\infty} e^{-st}\cos \omega
+tu(t)  dt\]</span> <span class="math display">\[\int_0^{\infty} e^{-st}
+\frac{e^{i\omega t} + e^{-i\omega t}}{2} dt = \frac{1}{2}
+\int_0^{\infty}  e^{(-s + i \omega)t} + e^{(-s - i\omega)t} dt
+=\]</span> <span class="math display">\[= \frac{1}{2} (\frac{1}{s - i
+\omega} + \frac{1}{s + i \omega}) = \frac{1}{2} \frac{2s}{s^2 +
+\omega^2}= \frac{s}{s^2 + \omega^2}\]</span> ◻</p>
+</div>
+<h2 id="common-theorems">Common Theorems</h2>
+<h3 id="frequency-shift-theorem-mathcalle-atft-fs-a">Frequency Shift
+Theorem: <span class="math inline">\(\mathcal{L}(e^{-at}f(t)) = F(s +
+a)\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span class="math display">\[\mathcal{L}(e^{-at}f(t))
+= \int_0^{\infty} e^{-st}e^{-at}f(t) dt = \int_0^{\infty} e^{-(s +
+a)t}f(t) dt = F(s + a)\]</span> ◻</p>
+</div>
+<h3 id="time-shift-theorem-mathcallft---t-e-stfs">Time Shift Theorem:
+<span class="math inline">\(\mathcal{L}(f(t - T)) =
+e^{-sT}F(s)\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span class="math display">\[\mathcal{L}(f(t - T)) =
+\int_0^{\infty} e^{-st} f(t - T) dt\]</span> <span
+class="math display">\[= e^{-sT}\int_{0}^{\infty}e^{-st + sT} f(t - T)
+dt =e^{-sT}\int_{0}^{\infty}e^{-s(t - T)} f(t - T) dt\]</span> <span
+class="math display">\[=e^{-sT}\int_{-T}^{\infty}e^{-st} f(t) dt =
+e^{-sT}f(t)\]</span> where we note <span class="math inline">\(f(t) =
+f(t)u(t)\)</span> must hold for the final result. ◻</p>
+</div>
+<h3 id="scaling-theorem-mathcallfat-frac1affracsa">Scaling Theorem:
+<span class="math inline">\(\mathcal{L}(f(at))  =
+\frac{1}{a}F(\frac{s}{a})\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span
+class="math display">\[\mathcal{L}(f(at))  =  \int_0^{\infty}
+e^{-st}f(at) dt = \frac{1}{a}\int_0^{\infty} e^{-st&#39;/a}f(t&#39;)
+dt&#39;\]</span> <span class="math display">\[= \frac{1}{a}
+F(\frac{s}{a})\]</span> letting <span class="math inline">\(t&#39; = at
+\implies dt = \frac{1}{a} dt&#39;\)</span>. ◻</p>
+</div>
+<h3
+id="differentiation-theorem-mathcallfracdfdt-sfs---f0-">Differentiation
+Theorem: <span class="math inline">\(\mathcal{L}(\frac{df}{dt}) = sF(s)
+- f(0-)\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span
+class="math display">\[\mathcal{L}(\frac{df}{dt})  = \int_0^{\infty}
+e^{-st} \frac{df}{dt} dt\]</span> <span class="math display">\[= e^{-st}
+f(t) - \int_0^{\infty} -s e^{-st} f(t) dt = - \lim_{t \to 0} f(t) +
+sF(s)\]</span> ◻</p>
+</div>
+<h3
+id="differentiation-theorem-mathcallfracd2fdt2-s2fs---sf0----f0-">Differentiation
+Theorem: <span class="math inline">\(\mathcal{L}(\frac{d^2f}{dt^2}) =
+s^2F(s) - sf(0-) - f&#39;(0-)\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span
+class="math display">\[\mathcal{L}(\frac{d^2f}{dt^2}) = \int_0^{\infty}
+e^{-st} \frac{d^2f}{dt^2} dt\]</span> <span class="math display">\[=
+e^{-st} f&#39;(t) - \int_0^{\infty} -se^{-st} \frac{df}{dt} dt =
+-\lim_{t \to 0}f&#39;(t) + s^2F(s) - s\lim_{t \to 0}f(t)\]</span> ◻</p>
+</div>
+<h3
+id="differentiation-theorem-mathcallfracdnfdtn-snfs---sum_k-1n-sn---k-fk---10-">Differentiation
+Theorem: <span class="math inline">\(\mathcal{L}(\frac{d^nf}{dt^n}) =
+s^nF(s) - \sum_{k = 1}^n s^{n - k} f^{k - 1}(0-)\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> Suppose by induction this is true, which is clear for
+<span class="math inline">\(n = 1, 2\)</span>, then <span
+class="math display">\[\mathcal{L}(\frac{d^{n + 1}f}{dt^{n + 1}}) =
+\int_0^{\infty} e^{-st} \frac{d^{n + 1}f}{dt^{n + 1}} dt\]</span> <span
+class="math display">\[= e^{-st} \frac{d^nf}{dt^n} + s \int_0^{\infty}
+e^{-st} \frac{d^nf}{dt^n} dt = -\lim_{t\to 0} f^n(t) + s\left( s^nF(s) -
+\sum_{k = 1}^n s^{n - k} f^{k - 1}(0-)\right)\]</span> <span
+class="math display">\[= -\lim_{t\to 0} f^n(t) +  s^{n + 1}F(s) -
+\sum_{k = 1}^n s^{n + 1 - k} f^{k - 1}(0-)\]</span> <span
+class="math display">\[= -s^{(n + 1) - (n + 1)} f^{(n + 1) - 1}
+(0-)  +  s^{n + 1}F(s) - \sum_{k = 1}^n s^{n + 1 - k} f^{k -
+1}(0-)\]</span> <span class="math display">\[= s^{n + 1}F(s) - \sum_{k =
+1}^{n + 1} s^{n + 1 - k} f^{k - 1}(0-)\]</span> ◻</p>
+</div>
+<h3
+id="integration-theorem-mathcallint_0-t-ftau-dtau-fracfss">Integration
+Theorem: <span class="math inline">\(\mathcal{L}(\int_{0-}^t f(\tau)
+d\tau ) = \frac{F(s)}{s}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> <span class="math display">\[\mathcal{L}(\int_{0-}^t
+f(\tau) d\tau ) =  \int_0^{\infty} e^{-st} \int_{0-}^t f(\tau) d\tau
+dt\]</span> <span class="math display">\[= \int_{0-}^t f(\tau) d\tau
+\frac{-1}{s} e^{-st} - \int_0^{\infty}\frac{-1}{s} e^{-st} f(t) dt =
+\frac{F(s)}{s}\]</span> ◻</p>
+</div>
+<h2
+id="partial-fraction-decomposition-real-roots-if-fs-fracnsds-where-deg-n-deg-d-then-factoring-d-pi_k-1n-s-p_kn_k-we-have-fs-sum_k-1n-sum_l-1n_k-fraca_k-ls-p_kl-by-partial-fraction-decomposition.-letting-f_k-s-p_kn_kf-it-follows-a_m-q-lim_s-to--p_mfrac1q---1-fracdq---1f_msdsq---1">Partial
+Fraction Decomposition, Real Roots: If <span class="math inline">\(F(s)
+= \frac{N(s)}{D(s)}\)</span> where <span class="math inline">\(\deg N
+&lt; \deg D\)</span>, then factoring <span class="math inline">\(D =
+\Pi_{k = 1}^n (s + p_k)^{n_k}\)</span> we have <span
+class="math inline">\(F(s) = \sum_{k = 1}^n \sum_{l = 1}^{n_k}
+\frac{A_{k, l}}{(s + p_k)^l}\)</span> by partial fraction decomposition.
+Letting <span class="math inline">\(F_k = (s + p_k)^{n_k}F\)</span> it
+follows <span class="math inline">\(A_{m, q} = \lim_{s \to
+-p_m}\frac{1}{(q - 1)!} \frac{d^{q - 1}F_m(s)}{ds^{q - 1}}\)</span></h2>
+<div class="proof">
+<p><em>Proof.</em> <span class="math display">\[F_{m}(s) = (s +
+p_m)^{n_m}F(s) = (s + p_m)^{n_m} \sum_{k = 1}^n \sum_{l = 1}^{n_k}
+\frac{A_{k, l}}{(s + p_k)^l}\]</span> <span class="math display">\[=  (s
++ p_m)^{n_m}\sum_{k \neq m }^n \sum_{l = 1}^{n_k} \frac{A_{k, l}}{(s +
+p_k)^l} +  \sum_{l = 1}^{n_m} \frac{A_{m, l}}{(s + p_m)^{l -
+n_m}}\]</span> <span class="math display">\[=  (s + p_m)^{n_m}\sum_{k
+\neq m }^n \sum_{l = 1}^{n_k} \frac{A_{k, l}}{(s + p_k)^l} +  \sum_{l =
+1}^{n_m} A_{m, l} (s + p_m)^{n_m - l}\]</span> Now observe <span
+class="math display">\[\frac{d^{q - 1}F_m(s)}{ds^{q - 1}}\]</span><span
+class="math display">\[= \frac{d^{q - 2}}{ds^{q - 2}}\left[n_m(s +
+p_m)^{n_m  - 1}\sum_{k \neq m }^n \sum_{l = 1}^{n_k} \frac{A_{k, l}}{(s
++ p_k)^l} +  (s + p_m)^{n_m} \frac{d}{ds}\left(\sum_{k \neq m }^n
+\sum_{l = 1}^{n_k} \frac{A_{k, l}}{(s +
+p_k)^l}\right)\right]\]</span></p>
+<p><span class="math display">\[+  \sum_{l = 1}^{n_m} \Pi_{t = -q +
+2}^{0}(n_m - l + t) A_{m, l} (s + p_m)^{n_m - l - q + 1}\]</span></p>
+<p><span class="math display">\[= \frac{d^{q - 2}}{ds^{q -
+2}}\left\lbrace (s + p_m)^{n_m  - 1} \left[ n_m \sum_{k \neq m }^n
+\sum_{l = 1}^{n_k} \frac{A_{k, l}}{(s + p_k)^l}  +  (s + p_m)
+\frac{d}{ds}\left(\sum_{k \neq m }^n \sum_{l = 1}^{n_k} \frac{A_{k,
+l}}{(s + p_k)^l}\right)\right] \right\rbrace\]</span></p>
+<p><span class="math display">\[+  \sum_{l = 1}^{n_m} \Pi_{t = -q +
+2}^{0}(n_m - l + t) A_{m, l} (s + p_m)^{n_m - l - q + 1}\]</span> and as
+<span class="math inline">\(s \to -p_m\)</span> we see the first term
+vanishes by the chain rule while the third has the only non-zero term
+occuring at <span class="math inline">\(l = n_m - q + 1\)</span> giving
+<span class="math display">\[\Pi_{t = -q + 2}^{0}(n_m - (n_m - q + 1) +
+t) A_{m, (n_m - q + 1)} (s + p_m)^{n_m - (n_m - q + 1) - q + 1}\]</span>
+<span class="math display">\[= \Pi_{t = -q + 2}^{0}(q - 1+ t) A_{m, n_m
+- q + 1} = (q - 1)!A_{m, n_m - q + 1}\]</span> Note that here we
+switched the order of <span class="math inline">\(A_{k, l}\)</span> so
+that <span class="math inline">\(p_k\)</span> is a root of multiplicity
+<span class="math inline">\(l\)</span> with residue <span
+class="math inline">\(A_{k, l}\)</span> (which seems natural); if we
+write <span class="math inline">\(A_{k, l}\)</span> as the residue of
+the term with <span class="math inline">\(p_k\)</span> as root of
+multiplicity <span class="math inline">\(n_k - l + 1\)</span> then we
+get <span class="math inline">\((q - 1)!A_{m, q}\)</span>. ◻</p>
+</div>
+<h3
+id="complex-roots-if-p_m-overlinep_o-in-mathbbc-then-a_m-q-overlinea_o-q">Complex
+Roots: If <span class="math inline">\(p_m = \overline{p_o} \in
+\mathbb{C}\)</span> then <span class="math inline">\(A_{m, q} =
+\overline{A_{o, q}}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> For simplicity in notation switch the ordering of
+<span class="math inline">\(A_{k, l}\)</span> as mentioned at the end of
+the previous proof. The use of the above claim is to simplify solving
+for <span class="math inline">\(A_{o}\)</span> if one knows <span
+class="math inline">\(A_{m}\)</span>. <span class="math display">\[A_{o,
+q} = \lim_{s \to - p_{o, q}} \frac{1}{(q - 1)!}\frac{d^{q - 1}(s +
+p_o)F(s)}{ds^{q - 1}}= \lim_{s \to -\overline{p_m}} \frac{1}{(q -
+1)!}\frac{d^{q - 1}(s + \overline{p_m})F(s)}{ds^{q - 1}}\]</span> <span
+class="math display">\[= \lim_{s \to -\overline{p_m}} \frac{1}{(q -
+1)!}\frac{d^{q - 1}(s + \overline{p_m})^qF(s)}{ds^{q - 1}}\]</span>
+<span class="math display">\[= \lim_{s \to -p_m} \frac{1}{(q -
+1)!}\frac{d^{q - 1}(\overline{s} +
+\overline{p_m})^qF(\overline{s})}{ds^{q - 1}}\]</span> Since <span
+class="math inline">\(F\)</span> is a fraction of polynomials, we have
+<span class="math inline">\(F(\overline{s}) = \overline{F(s)}\)</span>
+so <span class="math display">\[= \lim_{s \to -p_m} \frac{1}{(q -
+1)!}\frac{d^{q - 1}(\overline{s + p_m})^q\overline{F(s)}}{ds^{q -
+1}}\]</span> <span class="math display">\[= \lim_{s \to -p_m}
+\overline{\frac{1}{(q - 1)!}}\frac{d^{q - 1}\overline{(s +
+p_m)^q}\overline{F(s)}}{ds^{q - 1}}\]</span> <span
+class="math display">\[= \overline{ \lim_{s \to -p_m} \frac{1}{(q -
+1)!}\frac{d^{q - 1}(s + p_m)^q}{F(s)}{ds^{q - 1}}} = \overline{A_{m,
+q}}\]</span> ◻</p>
+</div>
+<h2 id="example-ft-te-5t-implies-fs-frac1s-52">Example: <span
+class="math inline">\(f(t) = te^{-5t} \implies F(s) = \frac{1}{(s +
+5)^2}\)</span></h2>
+<div class="proof">
+<p><em>Proof.</em> Observe <span
+class="math display">\[\mathcal{L}(te^{-5t}) = \int_0^{\infty} e^{-st}
+te^{-5t} dt =  \int_0^{\infty} te^{-t(s + 5)} dt\]</span> <span
+class="math display">\[= t \frac{-1}{(s + 5)} e^{-t(s + 5)}
+-  \int_0^{\infty}  \frac{-1}{s + 5} e^{-t(s + 5)} dt\]</span> <span
+class="math display">\[= 0 + \frac{1}{s + 5} \mathcal{L}(e^{-5t}u(t)) =
+\frac{1}{( s + 5)^2}\]</span> ◻</p>
+</div>
+<h2
+id="example-fs-frac10ss-2s-32-implies-ft-frac59---5e-2t-frac103te-3t-frac409e-3t">Example:
+<span class="math inline">\(F(s) = \frac{10}{s(s + 2)(s + 3)^2} \implies
+f(t) = \frac{5}{9} - 5e^{-2t} + \frac{10}{3}te^{-3t} +
+\frac{40}{9}e^{-3t}\)</span></h2>
+<div class="proof">
+<p><em>Proof.</em> Observe <span class="math display">\[\frac{10}{s(s +
+2)(s + 3)^2} = \frac{A}{s} + \frac{B}{s + 2} + \frac{C}{(s + 3)^2} +
+\frac{D}{s + 3}\]</span> where <span class="math display">\[A = \lim_{s
+\to 0} \frac{10}{(s + 2)(s + 3)^2} = \frac{5}{9}\]</span> <span
+class="math display">\[B = \lim_{s \to -2} \frac{10}{s(s + 3)^2} =
+-5\]</span> <span class="math display">\[C = \lim_{s \to
+-3}  \frac{10}{s(s + 2)} = \frac{10}{3}\]</span> <span
+class="math display">\[D = \lim_{s \to -3} \frac{d}{ds} \frac{10}{s(s +
+2)} = \lim_{s \to -3}  \frac{-10(2s + 2)}{s^2(s + 2)^2}  =
+\frac{40}{9}\]</span> Thus</p>
+<p><span class="math display">\[\mathcal{L}^{-1}(\frac{10}{s(s + 2)(s +
+3)^2}) = \mathcal{L}^{-1} \left(\frac{\frac{5}{9}}{s} + \frac{-5}{s + 2}
++ \frac{\frac{10}{3}}{(s + 3)^2} + \frac{\frac{40}{9}}{s +
+3}\right)\]</span> <span class="math display">\[=
+\frac{5}{9}\mathcal{L}^{-1} \left( \frac{1}{s}\right) - 5
+\mathcal{L}^{-1} \left( \frac{1}{s + 2}\right) + \frac{10}{3}
+\mathcal{L}^{-1} \left( \frac{1}{(s + 3)^2} \right) +
+\frac{40}{9}\mathcal{L}^{-1} \left( \frac{1}{s + 3}\right)\]</span>
+<span class="math display">\[= \frac{5}{9} - 5e^{-2t} +
+\frac{10}{3}te^{-3t} + \frac{40}{9}e^{-3t}\]</span> ◻</p>
+</div>
+<h1 id="the-transfer-function">The Transfer Function</h1>
+<p>Let <span class="math inline">\(c(t)\)</span> be the output of a
+control system, <span class="math inline">\(r(t)\)</span> be the input,
+and the control system represented by <span class="math display">\[a_n
+c^{(n)}(t) + a_{n - 1}c^{(n - 1)}(t) + \ldots a_0c(t) =  b_m r^{(n)}(t)
++ b_{m - 1}r^{(n - 1)}(t) + \ldots b_0r(t)\]</span> and let <span
+class="math inline">\(C(s) = \mathcal{L}(c(t)), R(s) =
+\mathcal{L}(r(t))\)</span> be the transforms. If the initial conditions
+(including derivatives) of <span class="math inline">\(c\)</span> and
+<span class="math inline">\(r\)</span> are zero, then applying the
+Laplace transform to both sides gives <span class="math display">\[a_n
+s^n C(s) + a_{n - 1}s^{n - 1}C(s) + \ldots a_0C(s) = b_m s^n R(s) + b_{m
+- 1}s^{m - 1}R(s) + \ldots b_0 R(s)\]</span> <span
+class="math display">\[\iff G(s) := \frac{C(s)}{R(s)} = \frac{\sum_{k =
+0}^m b_k s^k}{\sum_{k = 0}^n a_k s^k}\]</span> where <span
+class="math inline">\(G\)</span> is the defined transfer function.</p>
+<h2
+id="example-the-output-of-the-system-given-by-ct-2ct-rt-with-zero-initial-conditions-to-the-input-rt-ut-is-ct-frac12---frac12e-2t.">Example:
+The output of the system given by <span class="math inline">\(c&#39;(t)
++ 2c(t) = r(t)\)</span> with zero initial conditions to the input <span
+class="math inline">\(r(t) = u(t)\)</span> is <span
+class="math inline">\(c(t) = \frac{1}{2} -
+\frac{1}{2}e^{-2t}\)</span>.</h2>
+<div class="proof">
+<p><em>Proof.</em> The transfer function is <span
+class="math display">\[G(s) = \frac{1}{s + 2}\]</span> and <span
+class="math inline">\(R(s) = \mathcal{L}(u(t)) = \frac{1}{s}\)</span>
+thus <span class="math display">\[C(s) = G(s)R(s) = \frac{1}{s(s +
+2)}\]</span> Partial fraction decomposition gives <span
+class="math display">\[C(s) = \frac{A}{s} + \frac{B}{s + 2}\]</span>
+where <span class="math display">\[A = \lim_{s \to 0} \frac{1}{s +
+2}  =\frac{1}{2}\]</span> <span class="math display">\[B = \lim_{s \to
+-2} \frac{1}{s} = \frac{1}{-2}\]</span> so <span
+class="math display">\[c(t) = \mathcal{L}^{-1}(C(s)) =
+\frac{1}{2}\mathcal{L}^{-1}(\frac{1}{s}) - \frac{1}{2}
+\mathcal{L}^{-1}(\frac{1}{s + 2}) = \frac{1}{2} -
+\frac{1}{2}e^{-2t}\]</span> ◻</p>
+</div>
+<h2
+id="example-the-ramp-response-of-the-system-given-by-gs-fracss-4s-8-is-ct-frac132---frac116e-4t-frac132-e-8t.">Example:
+The ramp response of the system given by <span
+class="math inline">\(G(s) = \frac{s}{(s + 4)(s + 8)}\)</span> is <span
+class="math inline">\(c(t) = \frac{1}{32} - \frac{1}{16}e^{-4t} +
+\frac{1}{32} e^{-8t}\)</span>.</h2>
+<div class="proof">
+<p><em>Proof.</em> The ramp response is <span class="math inline">\(r(t)
+= t\)</span> for <span class="math inline">\(t &gt; 0\)</span>. Thus
+<span class="math display">\[R(s) = \mathcal{L}(r(t)) =
+\frac{1}{s^2}\]</span> Now <span class="math display">\[C(s) = G(s)R(s)
+= \frac{1}{s(s + 4)(s + 8)}\]</span> given by the partial fraction
+decomposition <span class="math display">\[C(s) = \frac{A}{s} +
+\frac{B}{s + 4} + \frac{C}{s + 8}\]</span> where <span
+class="math display">\[A = \lim_{s \to 0} \frac{1}{(s + 4)(s + 8)} =
+\frac{1}{32}\]</span> <span class="math display">\[B = \lim_{s \to -4}
+\frac{1}{s(s + 8)} = \frac{1}{-16}\]</span> <span
+class="math display">\[C = \lim_{s \to -8} \frac{1}{s(s + 4)} =
+\frac{1}{32}\]</span> so <span class="math display">\[c(t) =
+\frac{1}{32} \mathcal{L}^{-1}(\frac{1}{s}) - \frac{1}{16}
+\mathcal{L}^{-1}(\frac{1}{s + 4}) + \frac{1}{32}
+\mathcal{L}^{-1}(\frac{1}{s + 8}) = \frac{1}{32} - \frac{1}{16}e^{-4t} +
+\frac{1}{32}e^{-8t}\]</span> ◻</p>
+</div>
+<h1 id="electrical-network-transfer-functions">Electrical Network
+Transfer Functions</h1>
+<h2
+id="consider-image-containing-capacitor-with-capacitance-c-resistor-with-resistance-r-and-inductor-with-inductance-l.-the-transfer-function-relating-the-voltage-at-the-capacitor-v_ct-to-the-applied-vt-is-gs-frac1lcs2-crs-1.">Consider
+<img src="mesh1.png" alt="image" /> containing capacitor with
+capacitance <span class="math inline">\(C\)</span>, resistor with
+resistance <span class="math inline">\(R\)</span> and inductor with
+inductance <span class="math inline">\(L\)</span>. The transfer function
+relating the voltage at the capacitor <span
+class="math inline">\(v_C(t)\)</span> to the applied <span
+class="math inline">\(v(t)\)</span> is <span class="math inline">\(G(s)
+= \frac{1}{LCs^2 + CRs + 1}\)</span>.</h2>
+<h3 id="using-kirchhoffs-voltage-law-mesh-analysis">Using Kirchhoff’s
+Voltage Law (Mesh Analysis): </h3>
+<div class="proof">
+<p><em>Proof.</em> By Kirchhoff’s law <span class="math display">\[v(t)
+= v_L(t) + v_R(t) + v_C(t) = L i&#39;(t) + Ri(t) + v_C(t)\]</span> holds
+everywhere in the circuit. Now at the capacitor, <span
+class="math inline">\(v_C(t) = \frac{1}{C} \int_0^t i(\tau) d\tau
+\implies i(t) = Cv_C&#39;(t)\)</span>. Thus, making the substitution
+gives <span class="math display">\[v(t) = LCv&#39;&#39;_C(t) +
+RCv&#39;_C(t) + v_C(t)\]</span> In taking the Laplacian (assuming zero
+initial conditions) we get <span class="math display">\[G(s) =
+\frac{1}{LCs^2 + RCs + 1}\]</span> ◻</p>
+</div>
+<h3 id="transformed-image">(Transformed): <img src="mesh2.png"
+alt="image" /> </h3>
+<div class="proof">
+<p><em>Proof.</em> By Kirchhoff’s law <span class="math display">\[v(t)
+= v_L(t) + v_R(t) + v_C(t) = L i&#39;(t) + Ri(t) + \frac{1}{C} \int_0^t
+i(\tau) d\tau\]</span> <span class="math display">\[\implies V(s) =
+V_L(s) + V_R(s)+ V_C(s) =  LsI(s) + RI(s) + \frac{1}{Cs}I(s)\]</span>
+where <span class="math inline">\(Z_{\alpha}(s) =
+\frac{V_{\alpha}(s)}{I(s)}\)</span> are the respective impedances <span
+class="math inline">\(Ls, R\)</span> and <span
+class="math inline">\(\frac{1}{Cs}\)</span>. Thus <span
+class="math display">\[V(s) = (Ls + R+ \frac{1}{Cs})I(s)\]</span> and we
+obtain <span class="math display">\[\frac{V_C(s))}{V(s)} =
+\frac{Z_C(s)I(s)}{(Ls + R+ \frac{1}{Cs})I(s)} =  \frac{1}{Cs (Ls + R+
+\frac{1}{Cs})} = \frac{1}{LCs^2 + RCs + 1}\]</span> as the transfer
+function. ◻</p>
+</div>
+<h3 id="using-kirchhoffs-current-law-nodal-analysis">Using Kirchhoff’s
+Current Law (Nodal Analysis)</h3>
+<div class="proof">
+<p><em>Proof.</em> By Kirchhoff’s law (after transforming) <span
+class="math inline">\((Z_L + Z_R)I = V_L + V_R = V - V_C\)</span> so
+<span class="math display">\[I(s) = I_C^{out}(s) = I_C^{in}(s)
+\iff  \frac{V_C(s)}{Z_C(s)} = \frac{V(s) - V_C(s)}{Z_L(s) + Z_R(s)
+}\]</span> <span class="math display">\[\iff CsV_C(s) = \frac{V(s) -
+V_C(s)}{Ls + R}\]</span> <span class="math display">\[\iff V_C(s) (LsCs
++ RCs + 1) = V(s) \iff \frac{V_C(s)}{V(s)} = \frac{1}{LCs^2 + RCs +
+1}\]</span> ◻</p>
+</div>
+<h2
+id="consider-image-the-transfer-function-relating-i_2s-to-v-is-fraclcs2lcs2r_1-r_2-sr_1r_2c-l-r_1">Consider
+<img src="mesh3.png" alt="image" /> The transfer function relating <span
+class="math inline">\(I_2(s)\)</span> to <span
+class="math inline">\(V\)</span> is <span
+class="math inline">\(\frac{LCs^2}{LCs^2(R_1 + R_2) + s(R_1R_2C + L) +
+R_1}\)</span></h2>
+<h3 id="mesh-analysis">Mesh Analysis</h3>
+<div class="proof">
+<p><em>Proof.</em> By the first loop <span class="math display">\[V(s) =
+R_1I_1(s) + Ls(I_1(s) - I_2(s))\]</span> and by the second <span
+class="math display">\[0 = R_2I_2(s) + \frac{1}{Cs}I_2(s) + Ls(I_2(s) -
+I_1(s))\]</span> using Kirchhoff’s voltage law. In the language of
+matrices <span class="math display">\[\begin{bmatrix}
+        R_1 + Ls &amp; -Ls \\
+        -Ls &amp; R_2 + \frac{1}{Cs} + Ls
+    \end{bmatrix} \begin{bmatrix}
+    I_1(s) \\ I_2(s)
+\end{bmatrix} = \begin{bmatrix}
+V(s) \\ 0
+\end{bmatrix}\]</span> so by Cramer’s Rule <span
+class="math display">\[I_2(s) = \frac{\left\lvert \begin{bmatrix}
+            R_1 + Ls &amp; V(s) \\ -Ls &amp; 0
+\end{bmatrix} \right\rvert}{\left\lvert \begin{bmatrix}
+R_1 + Ls &amp; -Ls \\ -Ls &amp; R_2 + \frac{1}{Cs} + Ls
+\end{bmatrix} \right\rvert}\]</span> <span class="math display">\[=
+\frac{LsV(s)}{(R_1 + Ls)(R_2 + \frac{1}{Cs} + Ls) - L^2s^2}
+=  \frac{LsV(s)}{R_1R_2 + \frac{R_1}{Cs} + R_1Ls + LsR_2 + \frac{Ls}{Cs}
++ L^2s^2 - L^2s^2}\]</span> <span
+class="math display">\[=  \frac{CLs^2V(s)}{CsR_1R_2 + R_1 + CsR_1Ls +
+CsLsR_2 + Ls}\]</span> and so <span
+class="math display">\[\frac{I_2(s)}{V(s)} =  \frac{CLs^2}{CsR_1R_2 +
+R_1 + CsR_1Ls + CsLsR_2 + Ls}\]</span> ◻</p>
+</div>
+<h3 id="nodal-analysis-find-fracv_csvs">(Nodal Analysis) Find <span
+class="math inline">\(\frac{V_C(s)}{V(s)}\)</span></h3>
+<div class="proof">
+<p><em>Proof.</em> By the currents at node <span
+class="math inline">\(V_L(s)\)</span> <span
+class="math display">\[-\frac{V_L(s)}{Ls} + \frac{V(s) - V_L(s)}{R_1} -
+\frac{V_L(s) - V_C(s)}{R_2}= 0 \iff V_C(s)\frac{1}{R_2} +
+V(s)\frac{1}{R_1} = \frac{V_L(s)}{Ls} + \frac{V_L(s)}{R_1} +
+\frac{V_L(s)}{R_2}\]</span> and by those at node <span
+class="math inline">\(V_C(s)\)</span> <span
+class="math display">\[\frac{V_C(s)}{1/Cs} - \frac{V_L(s) - V_C(s)}{R_2}
+= 0 \iff V_C(s)(Cs + \frac{1}{R_2}) =  \frac{V_L(s)}{R_2}\]</span> In
+the language of matrices <span class="math display">\[\begin{bmatrix}
+        \frac{1}{R_2} &amp; \frac{1}{R_1} \\
+        Cs + \frac{1}{R_2} &amp; 0
+    \end{bmatrix} \begin{bmatrix}
+    V_C(s) \\ V(s)
+\end{bmatrix} = V_L(s)\begin{bmatrix}
+\frac{1}{Ls} + \frac{1}{R_1} + \frac{1}{R_2} \\ \frac{1}{R_2}
+\end{bmatrix}\]</span> Using Cramer’s Rule <span
+class="math display">\[V_C(s) = V_L(s)\frac{\left\lvert \begin{bmatrix}
+    \frac{1}{Ls} + \frac{1}{R_1} + \frac{1}{R_2} &amp; \frac{1}{R_1} \\
+\frac{1}{R_2} &amp; 0       
+\end{bmatrix} \right\rvert}{\left\lvert \begin{bmatrix}
+\frac{1}{R_2} &amp; \frac{1}{R_1} \\
+Cs + \frac{1}{R_2} &amp; 0
+\end{bmatrix} \right\rvert}\]</span> <span class="math display">\[=
+V_L(s)\frac{\frac{1}{R_2}}{Cs + \frac{1}{R_2}} = V_L(s)\frac{1}{CsR_2 +
+1}\]</span> and <span class="math display">\[V(s) =
+V_L(s)\frac{\left\lvert \begin{bmatrix}
+                \frac{1}{R_2} &amp; \frac{1}{Ls} + \frac{1}{R_1} +
+\frac{1}{R_2} \\
+            Cs + \frac{1}{R_2} &amp; \frac{1}{R_2}
+\end{bmatrix} \right\rvert}{\left\lvert \begin{bmatrix}
+            \frac{1}{R_2} &amp; \frac{1}{R_1} \\
+            Cs + \frac{1}{R_2} &amp; 0
+\end{bmatrix} \right\rvert}\]</span> <span class="math display">\[=
+V_L(s) \frac{\frac{1}{R_2^2} - \frac{C}{L} - \frac{1}{LsR_2} -
+\frac{Cs}{R_1} - \frac{1}{R_1R_2} - \frac{Cs}{R_2} -
+\frac{1}{R_2^2}}{-\frac{Cs}{R_1} - \frac{1}{R_1R_2}}\]</span></p>
+<p><span class="math display">\[= V_L(s) \frac{ \frac{C}{L} +
+\frac{1}{LsR_2} + \frac{Cs}{R_1} + \frac{1}{R_1R_2} +
+\frac{Cs}{R_2}}{\frac{Cs}{R_1} + \frac{1}{R_1R_2}}\]</span></p>
+<p><span class="math display">\[= V_L(s) \frac{ R_1R_2Cs + R_1 +
+R_2CLs^2 + Ls + R_1CLs^2 }{R_2CLs^2 + Ls}\]</span> thus <span
+class="math display">\[\frac{V_C(s)}{V(s)} = \frac{R_2CLs^2 + Ls}{(CsR_2
++ 1)( R_1R_2Cs + R_1 + R_2CLs^2 + Ls + R_1CLs^2)}\]</span> <span
+class="math display">\[= \frac{Ls}{ R_1R_2Cs + R_1 + R_2CLs^2 + Ls +
+R_1CLs^2 }\]</span> <span class="math display">\[= \frac{Ls}{ s^2(R_1CL
++ R_2CL) + s(R_1R_2C + L)  + R_1 }\]</span> ◻</p>
+</div>
+<h3 id="norton-equivalent-nodal-analysis-with-admittances-image">Norton
+Equivalent (Nodal Analysis with Admittances): <img src="mesh4.png"
+alt="image" /></h3>
+<div class="proof">
+<p><em>Proof.</em> At <span class="math inline">\(V_L(s)\)</span> <span
+class="math display">\[V(s)G_1 = G_1V_L(s) + \frac{1}{Ls}V_L(s) +
+G_2(V_L(s) - V_C(s))\]</span> and at <span
+class="math inline">\(V_C(s)\)</span> <span class="math display">\[0 =
+-G_2(V_L(s) + V_C(s)) + CsV_C(s)\]</span> ◻</p>
+</div>
+</body>
+</html>

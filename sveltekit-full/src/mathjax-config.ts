@@ -3,5 +3,7 @@ const mathjaxOptions = {
   tex: {
     inlineMath: [['$', '$'], ['\\(', '\\)']]
   }
-}
-window.MathJax = mathjaxOptions;
+};
+
+
+(window as any).MathJax = mathjaxOptions;

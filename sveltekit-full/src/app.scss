@@ -1,0 +1,41 @@
+@use './styles/variables' as variables;
+
+
+:root {
+  --accent-A: #{variables.$accent-A};
+  --accent-B: #{variables.$accent-B};
+  --pink: #{variables.$pink};
+  --yellow: #{variables.$yellow};
+  --orange: #{variables.$orange};
+  --text: #{variables.$text};
+
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #191d20;
+  color: var(--text);
+
+ 
+  * {
+    font-weight: 300;
+  }
+
+  .MathJax {
+    font-size: 1em !important;
+    color: var(--text);
+  }
+
+  .MathJax:hover {
+    color: var(--accent-A)
+  }
+
+}
