@@ -28,7 +28,7 @@
 
 <style lang="scss">
 
-  @import '../../styles/variables';
+  @import '../../sass/variables';
   .tex {
     :global(h2), :global(h3) {
       font-size: 1.5em;
