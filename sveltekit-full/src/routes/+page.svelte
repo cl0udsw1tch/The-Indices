@@ -2,11 +2,11 @@
 <script lang="ts">
   import Background from "../components/home/background.svelte";
   import Title from "../components/home/title.svelte";
-  let numImages = 10;
+  let numImages = 11;
   let windowRight: boolean = false;
   let currImage: number = 0;
   const handleImageChange = () => {
-    currImage = (currImage + 1) % 10;
+    currImage = (currImage + 1) % 11;
     windowRight = !windowRight;
   }
 </script>
@@ -81,7 +81,7 @@
       align-self: center;
       background-clip: text;
       -webkit-background-clip: text;
-      background-image: linear-gradient(rgba($text, 0.7), rgba($text, 0.7)), linear-gradient(rgba($text, 0.7), rgba($text, 0.7));
+      background-image: linear-gradient(rgba($text, 0.9), rgba($text, 0.9)), linear-gradient(rgba($text, 0.9), rgba($text, 0.9));
       background-position: left 0 top 0, right 0 top 0;
       background-size: 0% 100%, 50% 100%;
       background-repeat: no-repeat;
