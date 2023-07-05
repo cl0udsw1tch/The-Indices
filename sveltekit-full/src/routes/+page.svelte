@@ -1,39 +1,72 @@
 
 <script lang="ts">
+  import { onMount } from "svelte";
   import Background from "../components/home/background.svelte";
-  import Title from "../components/home/title.svelte";
-  let numImages = 11;
-  let windowRight: boolean = false;
-  let currImage: number = 0;
-  const handleImageChange = () => {
-    currImage = (currImage + 1) % 11;
-    windowRight = !windowRight;
+  import TitleImgClip from "../components/home/title_img_clip.svelte";
+  import TitleSolid from "../components/home/title_solid.svelte";
+
+  let numImages   : number = 11;
+  let windowRight : boolean = false;
+  let currImage   : number = Math.floor(Math.random() * (numImages - 1));
+  let timer       : NodeJS.Timeout | null;
+  let duration    : number = 20_000;
+  let isLocked    : boolean = false;
+
+  const updateTimer = () => {
+    timer = setTimeout(() => {
+        handleImageChange();
+      }, duration);
   }
+
+  const clearTimer = () => {
+    if (timer) clearTimeout(timer);
+  }
+
+  const handleImageChange = () => {
+    if (!isLocked) {
+      currImage = (currImage + 1) % numImages;
+      windowRight = !windowRight;
+      clearTimer();
+      updateTimer();
+    }
+    else {
+      const lock: HTMLElement = window.document.querySelector("i.closed")!;
+      lock.classList.toggle('bx-tada', true);
+      lock.style.color = 'red'
+      setTimeout(() => {
+        lock.classList.toggle('bx-tada', false);
+        lock.style.color = 'var(--accent-A)'
+      }, 1000)
+    }
+  }
+
+  const handleLock = () => {
+    isLocked = !isLocked;
+    if (isLocked) {
+      clearTimer();
+    }
+    else {
+      updateTimer();
+    }
+  }
+
+  onMount(() => {
+    updateTimer();
+    return clearTimer;
+  })
 </script>
 
 
 <main class:windowRight={windowRight}>
-
   {#each Array(numImages) as _, i}
     <Background imageName={`main${i}.jpg`} show={currImage == i}/>
   {/each}
-
   {#each Array(numImages) as _, i}
-    <Title imageName={`main${i}.jpg`} show={currImage == i}/>
+    <TitleImgClip imageName={`main${i}.jpg`} show={currImage == i}/>
   {/each}
-  
-
-  <div class="title solid">
-    <h1>
-      <span>The In</span> 
-      <span class="partial">&part;</span> 
-      <span>ices</span>
-    </h1>
-    <div class="change-image" on:click={handleImageChange} />
-  </div>
+  <TitleSolid on:click={handleImageChange} windowRight={windowRight} on:lock={handleLock}/>
 </main>   
 <footer>
-  
 </footer>
 
 
@@ -73,100 +106,9 @@
       font-size: 32px;
     }
 
-    .title.solid {
-      z-index: 3;
-      color: transparent;
-      width: 100%;
-      position: absolute;
-      align-self: center;
-      background-clip: text;
-      -webkit-background-clip: text;
-      background-image: linear-gradient(rgba($text, 0.9), rgba($text, 0.9)), linear-gradient(rgba($text, 0.9), rgba($text, 0.9));
-      background-position: left 0 top 0, right 0 top 0;
-      background-size: 0% 100%, 50% 100%;
-      background-repeat: no-repeat;
-      transition: background-size $transitionDuration;
-      padding-right: 5%;
-
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-
-      @include large {
-        padding-right: 80px;
-      }
-
-      h1 {
-        display: flex;
-        flex-direction: row;
-        padding: 0;
-        margin: 0;
-        -webkit-text-stroke: 2px $text;
-
-      }
-      h1, span {
-        
-        font-size: 15vw;
-        font-weight: 1000;
-
-        @include large {
-          font-size: 220px;
-        }
-        
-      }
-
-      span.partial {
-
-        color: rgba($accent-A, 0.7);
-        -webkit-text-stroke-width: 0px;
-        
-      };
-
-      div.change-image {
-        
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        padding-left: 20px;
-        justify-content: center;
-        top: 100%;
-        right: 50%;
-        width: 100px;
-        height: 50px;
-        border-radius: 10px;
-        background-color: $text;
-        transition-duration: $transitionDuration;
-
-        &::before {
-          position: absolute;
-          content: '';
-          height: 40px;
-          width: 30px;
-          display: flex;
-          border-radius: 10px;
-          border: 3px solid orangered;
-          background-color: rgba(orangered, 0.5);
-
-        }
-      }
-
-    }
-    
-
     &.windowRight {
-
       &::after {
         transform: translateX(100%);
-      }
-
-      div.change-image {
-        transform: translateX(100px);
-        background-color: var(--text);
-        
-      }
-
-      .title.solid {
-        background-size: 50% 100%, 0 100%;
       }
     }
   
